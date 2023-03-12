@@ -53,13 +53,13 @@ class TestEngine:
         )
 
         driver.implicitly_wait(0.5)
-
         driver.get(self.site_routes[0])
 
+        # scrape href's present in the navbar
         for a_tags in driver.find_elements(By.CLASS_NAME,"header_inner"):
     
             for href in a_tags.find_elements(By.TAG_NAME,"a"):
-                site_routes.append(href.get_attribute("href"))
+                self.site_routes.append(href.get_attribute("href"))
 
 
         for link in site_routes:
@@ -69,7 +69,7 @@ class TestEngine:
             # wait till the site is loaded
             WebDriverWait(driver,self.LOADING_SLEEP).until(EC.presence_of_element_located((By.TAG_NAME,"body")))
 
-
+            # extract network logs 
             browser_log = driver.get_log('performance') 
             events = [TestEngine.process_browser_log_entry(entry) for entry in browser_log]
             events = [event for event in events if 'Network.response' in event['method']]
