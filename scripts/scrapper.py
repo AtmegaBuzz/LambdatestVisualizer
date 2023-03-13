@@ -2,7 +2,9 @@ import json
 import chromedriver_autoinstaller
 
 from uuid import uuid4
+from datetime import datetime
 from elasticsearch import Elasticsearch
+
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -47,10 +49,14 @@ class TestEngine:
 
     def run(self):
         
+
+
         driver = webdriver.Chrome(
             options=self.options,
             desired_capabilities=self.caps
         )
+
+        print("driver created...")
 
         driver.implicitly_wait(0.5)
         driver.get(self.site_routes[0])
@@ -61,7 +67,7 @@ class TestEngine:
             for href in a_tags.find_elements(By.TAG_NAME,"a"):
                 self.site_routes.append(href.get_attribute("href"))
 
-
+        print("scrapping started...")
         for link in site_routes:
 
             driver.get(link)
@@ -78,10 +84,13 @@ class TestEngine:
 
                 if "response" not in packet["params"]:
                     continue
-
-                self.elastic_insert(packet)
                 
+                packet["datetime"] = datetime.now().strftime("%Y-%m-%d")
+                self.elastic_insert(packet)
+            
+            print("done :",link)
 
+        print("scrapping completed. closing webdriver...")
         driver.quit()
 
 
@@ -97,6 +106,8 @@ if __name__ == "__main__":
 
     options = Options()
     options.add_argument("--start-maximized")
+    options.add_argument('--headless')
+
 
     caps = DesiredCapabilities.CHROME
     caps['goog:loggingPrefs'] = {'performance': 'ALL'}
