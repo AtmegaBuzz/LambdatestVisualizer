@@ -43,11 +43,11 @@ export default function Mime() {
 
     const get_year_mimetype_logs = async () => {
         
-        if(filterMimeType=="All"){
+        if(filterMimeType==="All"){
 
             let resp = await Promise.all(
                 mimeTypes.map(async mimeType => {
-                    if (mimeType!="All"){
+                    if (mimeType!=="All"){
                         return {
                             mime:mimeType,
                             data: await get_logs(mimeType)

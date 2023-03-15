@@ -21,7 +21,7 @@ export default function MimeLogs(){
     const [hidden,setHidden] = useState(true);
 
     let datasets = yearMimeTypeLogs.map(mime=>{
-        if (mime!=undefined){
+        if (mime!==undefined){
             return {
                 label: `${mime.mime} count`,
                 data: mime.data,   

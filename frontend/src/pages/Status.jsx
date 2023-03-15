@@ -41,11 +41,11 @@ export default function Status() {
 
     const get_year_statuscode_logs = async () => {
 
-        if(filterStatusCode=="All"){
+        if(filterStatusCode==="All"){
 
             let resp = await Promise.all(
                 statusCodes.map(async status => {
-                    if (status!="All"){
+                    if (status!=="All"){
                         return {
                             status:status,
                             data: await get_logs(status)

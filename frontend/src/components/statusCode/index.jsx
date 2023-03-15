@@ -22,7 +22,7 @@ export default function StatusCodeLogs(){
     const [hidden,setHidden] = useState(true);
 
     let datasets = yearStatusCodeLogs.map(status=>{
-        if (status!=undefined){
+        if (status!==undefined){
             return {
                 label: `${status.status} count`,
                 data: status.data,   
