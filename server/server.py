@@ -240,3 +240,18 @@ def statusCodeLogs():
    
     return res["aggregations"]["by_statusCode"]["buckets"]
 
+
+
+
+@app.get("/logs")
+def logs():
+
+    resp = es.search(
+        index="network_logs",
+        size=10,
+        sort=[
+            {'datetime':{"order":"desc"}}
+        ]
+    )
+    return resp["hits"]["hits"]
+
