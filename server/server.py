@@ -3,8 +3,7 @@ import json
 from elasticsearch import Elasticsearch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-
+from models import MimeTypePost, StatusCodePost
 
 
 app = FastAPI()
@@ -16,12 +15,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 es = Elasticsearch("http://localhost:9200")
-
-class MimeTypePost(BaseModel):
-    mimeType:str
-
-class StatusCodePost(BaseModel):
-    statusCode:int
 
 
 
@@ -185,7 +178,6 @@ def postStatusCode(statusCode:StatusCodePost):
     for i in range(365):
 
         date = (datetime.datetime.today() - datetime.timedelta(days=i)).strftime("%Y-%m-%d")
-    
 
         res = es.search(
                 index="network_logs",
