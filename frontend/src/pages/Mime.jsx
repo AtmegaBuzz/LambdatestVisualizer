@@ -3,9 +3,9 @@ import { LogsContext } from "../App";
 import MimeLogs from "../components/mimeType";
 
 
-const get_logs = async (mimeType)=>{
+const get_logs = async (mimeType,fkey,fval)=>{
     
-    let resp = await fetch("http://127.0.0.1:8000/mimeType", {
+    let resp = await fetch(`http://127.0.0.1:8000/mimeType?key=${fkey}&val=${fval}`, {
         headers: {
             accept: "application/json",
             "Content-Type": "application/json",
@@ -28,7 +28,8 @@ export default function Mime() {
         setMimeTypes,
         setYearMimeTypeLogs,
         setMimePieData,
-        setFilterMimeType
+        setFilterMimeType,
+        filterKey,filterValue
     
     } = useContext(LogsContext);
 
@@ -50,7 +51,7 @@ export default function Mime() {
                     if (mimeType!=="All"){
                         return {
                             mime:mimeType,
-                            data: await get_logs(mimeType)
+                            data: await get_logs(mimeType,filterKey,filterValue)
                         }
                     }
 
@@ -68,7 +69,7 @@ export default function Mime() {
     };
 
     const get_mime_pie_data = async () => {
-        let resp = await fetch("http://127.0.0.1:8000/mimeTypesLog");
+        let resp = await fetch(`http://127.0.0.1:8000/mimePieData?key=${filterKey}&val=${filterValue}`);
         let data = await resp.json();
         setMimePieData(data);
     };
@@ -76,12 +77,12 @@ export default function Mime() {
 
     useEffect(() => {
         get_mimeTypes();
-        get_mime_pie_data();
     }, []);
-
+    
     useEffect(() => {
+        get_mime_pie_data();
         get_year_mimetype_logs();
-    }, [filterMimeType]);
+    }, [filterMimeType,filterKey,filterValue]);
 
   return <MimeLogs />;
 }

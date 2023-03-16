@@ -4,10 +4,10 @@ import { LogsContext } from "../App";
 
 export default function Home(){
 
-    const {setYearLogCount} = useContext(LogsContext);
+    const {setYearLogCount,filterKey,filterValue} = useContext(LogsContext);
 
     const get_log_count = async () => {
-        let resp = await fetch("http://127.0.0.1:8000");
+        let resp = await fetch(`http://127.0.0.1:8000?key=${filterKey}&val=${filterValue}`);
         let data = await resp.json();
         setYearLogCount(data);
     };

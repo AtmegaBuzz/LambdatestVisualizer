@@ -8,7 +8,6 @@ export default function Logs(){
 
     const {networkLogs,setNetworkLogs,filterKey,filterValue} = useContext(LogsContext);
 
-    console.log(filterKey,filterValue)
     const get_network_logs = async ()=>{
         let resp = await fetch(`http://127.0.0.1:8000/logs?key=${filterKey}&val=${filterValue}`)
         let data = await resp.json();

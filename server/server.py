@@ -1,5 +1,4 @@
 import datetime
-import json
 from elasticsearch import Elasticsearch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,10 +18,11 @@ es = Elasticsearch("http://localhost:9200")
 
 
 @app.get("/")
-def home():
+def home(key:str,val:str):
 
     yearly_log_count = []
 
+    query = filter_keyval_query_builder(key,val)
 
     for i in range(365):
 
@@ -33,10 +33,14 @@ def home():
                 index="network_logs",
                 body={
                     "query":{
-                        "match":{
-                            "datetime":date,
-                        },
-                        
+                        "bool":{
+                            "must":[
+                                {
+                                    "match":{"datetime":date}
+                                },
+                                query
+                            ]
+                        }
                     }
                 }
             )
@@ -71,35 +75,11 @@ def getMimeType():
     return mime_typs
 
 
-
-@app.get("/mimeTypesLog")
-def mimeTypesLog():
-
-    res = es.search(
-                index="network_logs",
-
-                body={
-                    "_source":[],
-                    "size":0,
-                    "aggs":{
-                        "by_mimeType":{
-                            "terms":{
-                                "field":f"params.response.mimeType.keyword",
-                                "order":{
-                                    "_count":"desc"
-                                },
-                            }
-                        }
-                    }
-                }
-            )
-   
-    return res["aggregations"]["by_mimeType"]["buckets"]
-
-
-
 @app.post("/mimeType")
-def postMimeType(mimeType:MimeTypePost):
+def postMimeType(mimeType:MimeTypePost,key:str,val:str):
+
+    query = filter_keyval_query_builder(key,val)
+
 
     yearly_log_count = []
 
@@ -118,7 +98,8 @@ def postMimeType(mimeType:MimeTypePost):
                         "bool":{
                             "must":[
                                     {"match" : { "datetime":date, }},
-                                    {"match" : { "params.response.mimeType.keyword":mimeType.mimeType}}
+                                    {"match" : { "params.response.mimeType.keyword":mimeType.mimeType}},
+                                    query
                             ]
                         }  
                         
@@ -142,6 +123,43 @@ def postMimeType(mimeType:MimeTypePost):
             yearly_log_count.append(0)
 
     return {"count":yearly_log_count}
+
+
+
+@app.get("/mimePieData")
+def mimeTypesLog(key:str,val:str):
+
+    query = filter_keyval_query_builder(key,val)
+
+    res = es.search(
+                index="network_logs",
+
+                body={
+                    "_source":[],
+                    "size":0,
+                    "query":{
+                        "bool":{
+                            "must":[
+                                query
+                            ]
+                        }
+                    },
+                    "aggs":{
+                        "by_mimeType":{
+                            "terms":{
+                                "field":f"params.response.mimeType.keyword",
+                                "order":{
+                                    "_count":"desc"
+                                },
+                            }
+                        }
+                    }
+                }
+            )
+   
+    return res["aggregations"]["by_mimeType"]["buckets"]
+
+
 
 
 @app.get("/statusCode")
@@ -171,8 +189,9 @@ def getStatusCode():
 
 
 @app.post("/statusCode")
-def postStatusCode(statusCode:StatusCodePost):
+def postStatusCode(statusCode:StatusCodePost,key:str,val:str):
 
+    query = filter_keyval_query_builder(key,val)
     yearly_log_count = []
 
     for i in range(365):
@@ -189,7 +208,8 @@ def postStatusCode(statusCode:StatusCodePost):
                         "bool":{
                             "must":[
                                     {"match" : { "datetime":date, }},
-                                    {"match" : { "params.response.status":statusCode.statusCode}}
+                                    {"match" : { "params.response.status":statusCode.statusCode}},
+                                    query
                             ]
                         }  
                         
@@ -216,8 +236,10 @@ def postStatusCode(statusCode:StatusCodePost):
 
 
 
-@app.get("/statusCodeLogs")
-def statusCodeLogs():
+@app.get("/statusPieData")
+def statusCodeLogs(key:str,val:str):
+
+    query = filter_keyval_query_builder(key,val)
 
     res = es.search(
                 index="network_logs",
@@ -225,6 +247,13 @@ def statusCodeLogs():
                 body={
                     "_source":[],
                     "size":0,
+                    "query":{
+                        "bool":{
+                            "must":[
+                                query
+                            ]
+                        }
+                    },
                     "aggs":{
                         "by_statusCode":{
                             "terms":{
@@ -244,14 +273,20 @@ def statusCodeLogs():
 
 
 @app.get("/logs")
-def logs(key:str=None,val:str=None):
+def logs(key:str,val:str):
 
     query = filter_keyval_query_builder(key,val)
     
     resp = es.search(
         index="network_logs",
         size=10,
-        query=query,
+        query={
+            "bool":{
+                "must":[
+                    query
+                ]
+            }
+        },
         sort=[
             {'datetime':{"order":"desc"}}
         ]

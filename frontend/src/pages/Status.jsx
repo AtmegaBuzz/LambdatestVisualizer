@@ -3,8 +3,8 @@ import { LogsContext } from "../App";
 import StatusCodeLogs from "../components/statusCode";
 
 
-const get_logs = async (status) =>{
-    let resp = await fetch("http://127.0.0.1:8000/statusCode", {
+const get_logs = async (status,fkey,fval) =>{
+    let resp = await fetch(`http://127.0.0.1:8000/statusCode?key=${fkey}&val=${fval}`, {
         headers: {
             accept: "application/json",
             "Content-Type": "application/json",
@@ -28,6 +28,7 @@ export default function Status() {
         setYearStatusCodeLogs,
         setStatusPieData,
         setfilterStatusCode,
+        filterKey,filterValue
     } = useContext(LogsContext);
 
     //  Status code logs API calls
@@ -48,7 +49,7 @@ export default function Status() {
                     if (status!=="All"){
                         return {
                             status:status,
-                            data: await get_logs(status)
+                            data: await get_logs(status,filterKey,filterValue)
                         }
                     }
 
@@ -68,7 +69,7 @@ export default function Status() {
     };
 
     const get_status_pie_data = async () => {
-        let resp = await fetch("http://127.0.0.1:8000/statusCodeLogs");
+        let resp = await fetch(`http://127.0.0.1:8000/statusPieData?key=${filterKey}&val=${filterValue}`);
         let data = await resp.json();
         setStatusPieData(data);
     };
@@ -76,12 +77,12 @@ export default function Status() {
 
     useEffect(() => {
         get_statusCodes();
-        get_status_pie_data();
     }, []);
-
+    
     useEffect(() => {
+        get_status_pie_data();
         get_year_statuscode_logs();
-    }, [filterStatusCode]);
+    }, [filterStatusCode,filterKey,filterValue]);
 
   return <StatusCodeLogs />;
 }
