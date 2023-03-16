@@ -64,6 +64,9 @@ function App() {
     setFilterValue
   };
 
+  useEffect(()=>{
+    document.title = "Lambda Assignment | Visualize your tests"
+  },)
 
   return (
     <LogsContext.Provider value={contextData}>

@@ -2,7 +2,13 @@ import { useNavigate } from "react-router-dom";
 
 export default function LogCard(props) {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  let protocol = "null";
+
+  if (props.log._source.params.response.securityDetails!==undefined){
+    protocol = props.log._source.params.response.securityDetails.protocol;
+  }
+
 
   return (
     <div className="overflow-hidden bg-gray-100  shadow-md sm:rounded-lg w-[60%] mt-10">
@@ -47,7 +53,10 @@ export default function LogCard(props) {
           <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt className="text-sm font-medium text-gray-500">Protocol</dt>
             <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {props.log._source.params.response.securityDetails.protocol}
+              {
+                
+              }
+                {protocol}
             </dd>
           </div>
           <div className="bg-white flex justify-center items-center">
