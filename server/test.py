@@ -128,6 +128,18 @@ a = {
     }
 
 
+d = es.search(index="network_logs",body={
+  "query": {
+    "match":{
+        "_all":200
+    }
+  }
+})
+
+
+print(d)
+
+
 # es.index(index="network_logs",id=2,body=a)
 
 # res = es.get(index="network_logs",id=1)
@@ -158,4 +170,4 @@ a = {
 
 
 
-docker run -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+# docker run -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.9

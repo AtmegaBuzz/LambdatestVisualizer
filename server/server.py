@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models import MimeTypePost, StatusCodePost
-
+from utils import filter_keyval_query_builder
 
 app = FastAPI()
 app.add_middleware(
@@ -244,14 +244,18 @@ def statusCodeLogs():
 
 
 @app.get("/logs")
-def logs():
+def logs(key:str=None,val:str=None):
 
+    query = filter_keyval_query_builder(key,val)
+    
     resp = es.search(
         index="network_logs",
         size=10,
+        query=query,
         sort=[
             {'datetime':{"order":"desc"}}
         ]
     )
+
     return resp["hits"]["hits"]
 
