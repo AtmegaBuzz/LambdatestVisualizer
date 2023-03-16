@@ -4,16 +4,16 @@
 def filter_keyval_query_builder(key:str,val:str):
 
     
-    query = {"bool":{"must":[]}}
+    query = []
 
-    if key!="" and val!="":
+    if key.strip()!="" and val.strip()!="":
         
         # filter for keyword if val is string
         if not val.isdigit():
             key += ".keyword"
 
         
-        query = {"match":{key:val}}
+        query = [{"match":{key:val}}]
     
 
     return query

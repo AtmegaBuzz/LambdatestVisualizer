@@ -130,14 +130,17 @@ a = {
 
 d = es.search(index="network_logs",body={
   "query": {
-    "match":{
-        "_all":200
-    }
-  }
+    
+            "multi_match":{
+                "query": "Network.responseReceived",
+                "type": "phrase",
+            }
+        }
+    
 })
 
 
-print(d)
+print(d["hits"]["hits"][1])
 
 
 # es.index(index="network_logs",id=2,body=a)

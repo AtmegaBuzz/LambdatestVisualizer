@@ -38,7 +38,7 @@ def home(key:str,val:str):
                                 {
                                     "match":{"datetime":date}
                                 },
-                                query
+                                {"bool":{"must":query}}
                             ]
                         }
                     }
@@ -78,8 +78,6 @@ def getMimeType():
 @app.post("/mimeType")
 def postMimeType(mimeType:MimeTypePost,key:str,val:str):
 
-    query = filter_keyval_query_builder(key,val)
-
 
     yearly_log_count = []
 
@@ -99,7 +97,6 @@ def postMimeType(mimeType:MimeTypePost,key:str,val:str):
                             "must":[
                                     {"match" : { "datetime":date, }},
                                     {"match" : { "params.response.mimeType.keyword":mimeType.mimeType}},
-                                    query
                             ]
                         }  
                         
@@ -139,9 +136,7 @@ def mimeTypesLog(key:str,val:str):
                     "size":0,
                     "query":{
                         "bool":{
-                            "must":[
-                                query
-                            ]
+                            "must":query
                         }
                     },
                     "aggs":{
@@ -191,7 +186,6 @@ def getStatusCode():
 @app.post("/statusCode")
 def postStatusCode(statusCode:StatusCodePost,key:str,val:str):
 
-    query = filter_keyval_query_builder(key,val)
     yearly_log_count = []
 
     for i in range(365):
@@ -208,10 +202,9 @@ def postStatusCode(statusCode:StatusCodePost,key:str,val:str):
                         "bool":{
                             "must":[
                                     {"match" : { "datetime":date, }},
-                                    {"match" : { "params.response.status":statusCode.statusCode}},
-                                    query
+                                    {"match" : { "params.response.status":statusCode.statusCode}}
                             ]
-                        }  
+                        }
                         
                     },
                     "aggs":{
@@ -249,9 +242,7 @@ def statusCodeLogs(key:str,val:str):
                     "size":0,
                     "query":{
                         "bool":{
-                            "must":[
-                                query
-                            ]
+                            "must":query
                         }
                     },
                     "aggs":{
@@ -273,20 +264,33 @@ def statusCodeLogs(key:str,val:str):
 
 
 @app.get("/logs")
-def logs(key:str,val:str):
+def logs(key:str,val:str,multiMatch:str=None):
 
-    query = filter_keyval_query_builder(key,val)
     
-    resp = es.search(
-        index="network_logs",
-        size=10,
+    if multiMatch and multiMatch.strip()!="":
+        query = {
+            "multi_match":{
+                "query": multiMatch,
+                "type": "phrase",
+            },
+        }
+
+    else:
+        es_query = filter_keyval_query_builder(key,val)
         query={
             "bool":{
                 "must":[
-                    query
+                    {"bool":{"must":es_query}}
                 ]
             }
-        },
+        }
+
+    
+
+    resp = es.search(
+        index="network_logs",
+        size=10,
+        query=query,
         sort=[
             {'datetime':{"order":"desc"}}
         ]
