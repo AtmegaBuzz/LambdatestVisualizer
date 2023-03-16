@@ -1,6 +1,21 @@
+import { useState,useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { BsFillKeyFill } from "react-icons/bs";
+import { LogsContext } from "../../App";
+
 
 export default function Navbar() {
+
+  const [key,setKey] = useState("");
+  const [val,setVal] = useState("");
+
+  const {setFilterKey,setFilterValue} = useContext(LogsContext);
+
+  const onSearch = ()=>{
+    setFilterKey(key);
+    setFilterValue(val);
+  }
+
 
   const navLinkActive = ({isActive}) => {
     return {
@@ -12,16 +27,18 @@ export default function Navbar() {
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900 scale-125">
       <div className="container flex flex-wrap items-center justify-between mx-auto px-8 py-2">
-        <a href="https://flowbite.com/" className="flex items-center">
+        <a href="https://github.com/LambdaTest" className="flex items-center">
           <img
-            src="https://flowbite.com/docs/images/logo.svg"
+            src="https://avatars.githubusercontent.com/u/126493617?s=200&v=4"
             className="h-6 mr-3 sm:h-9"
             alt="Flowbite Logo"
           />
           <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-            Flowbite
+            LambdaTest
           </span>
         </a>
+
+        {/* search fields */}
         <div className="flex md:order-2">
           <button
             type="button"
@@ -47,6 +64,20 @@ export default function Navbar() {
           </button>
           <div className="relative hidden md:block">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <BsFillKeyFill className="text-gray-400"/> 
+              <span className="sr-only">Search icon</span>
+            </div>
+            <input
+              onChange={(val)=>setKey(val.target.value)}
+              type="text"
+              id="search-navbar"
+              className="block w-[60%] p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Key"
+            />
+          </div>
+
+          <div className="relative hidden md:block">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg
                 className="w-5 h-5 text-gray-500"
                 aria-hidden="true"
@@ -63,12 +94,21 @@ export default function Navbar() {
               <span className="sr-only">Search icon</span>
             </div>
             <input
+              onChange={(val)=>setVal(val.target.value)}
               type="text"
               id="search-navbar"
-              className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search..."
+              className="block w-[60%] p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Value"
             />
           </div>
+
+          <div className="relative hidden md:block">
+            <button onClick={onSearch} className="w-[150px] h-[40px] bg-blue-800 rounded-md text-white font-bold hover:bg-blue-900">
+              Search
+            </button>
+          </div>
+
+
           <button
             data-collapse-toggle="navbar-search"
             type="button"

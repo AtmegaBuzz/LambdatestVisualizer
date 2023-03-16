@@ -26,9 +26,11 @@ function App() {
   const [yearStatusCodeLogs, setYearStatusCodeLogs] = useState([]);
   const [statusPieData, setStatusPieData] = useState([]);
   const [filterStatusCode, setfilterStatusCode] = useState([]);
-
+  
   // logs page state
   const [networkLogs,setNetworkLogs] = useState([]);
+  
+  // nav filter state 
   const [filterKey,setFilterKey] = useState("");
   const [filterValue,setFilterValue] = useState("");
 
