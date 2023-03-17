@@ -1,9 +1,13 @@
 import datetime
+import os
 from elasticsearch import Elasticsearch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models import MimeTypePost, StatusCodePost
 from utils import filter_keyval_query_builder
+
+ES_HOST = os.getenv("ELASTICSEARCH_HOSTS","http://localhost:9200")
+es = Elasticsearch(ES_HOST)
 
 app = FastAPI()
 app.add_middleware(
@@ -13,7 +17,6 @@ app.add_middleware(
     allow_methods=["*"], # Allows all methods
     allow_headers=["*"]
 )
-es = Elasticsearch("http://localhost:9200")
 
 
 
