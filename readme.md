@@ -13,6 +13,14 @@ With its intuitive front-end interface, LambdaLogs enables users to easily visua
 
 So if you're looking for a powerful tool to help you optimize your website and improve your business operations, look no further than LambdaLogs.
 
+<img alt="LambdaLogs Logs Page" src="https://user-images.githubusercontent.com/68425016/227501453-e64d5d4d-b31a-4724-a24f-5715069b16e9.png"  style="margin-left:10px; margin-bottom:10px;" width="100%" align="center"/>
+<br /><br />
+
+<img alt="LambdaLogs Status Logs Page" src="https://user-images.githubusercontent.com/68425016/227501830-d4dc21f7-4717-40b4-9264-311696e5b55f.png"  style="margin-left:10px; margin-bottom:10px;" width="100%" align="center"/>
+<br /><br />
+
+<img alt="LambdaLogs Status PieChart" src="https://user-images.githubusercontent.com/68425016/227501830-d4dc21f7-4717-40b4-9264-311696e5b55f.png"  style="margin-left:10px; margin-bottom:10px;" width="100%" align="center"/>
+<br /><br />
 
 # Development Setup
 
